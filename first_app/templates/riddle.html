@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container d-flex flex-column justify-content-center align-items-center mt-5 text-center">
+    <h1 class="mb-4">Riddle of the Day</h1>
+    <p class="fs-4 mb-4">{{ riddle }}</p>
+    <a href="/answer">Answer</a>
+ </div>
+{% endblock %}

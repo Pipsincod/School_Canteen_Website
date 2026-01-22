@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>{{ topic_2 }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div>{{ comment_form.text.label }}</div>
+        <div>{{ comment_form.text }}</div>
+
+        <div>
+            <input type="submit" value="Отправить">
+        </div>
+    </form>
+
+    Comments
+    <table border="1px">
+        <tr>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Author</th>
+        </tr>
+
+        {% for item in comments %}
+            <tr>
+                <td>{{ item.text }}</td>
+                <td>{{ item.create_at }}</td>
+                <td>{{ item.author.username }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
