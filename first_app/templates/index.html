@@ -1,6 +1,134 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Author: {{ author }}</h1>
-    <h2>{{ topic }}</h2>
-    <h3>All pages {{ page_count }}</h3>
+<div class="container mt-5">
+    <h1 class="text-center mb-5 fw-bold" style="color: #6a11cb;">Что сегодня в меню?</h1>
+
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-white text-center py-3" style="background: linear-gradient(45deg, #6a11cb, #2575fc);">
+                    <h2 class="mb-0 fw-bold">Завтрак</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Понедельник</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Вторник</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Среда</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Четверг</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Пятница</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Суббота</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Воскресенье</span>
+                            <a href="" class="btn btn-purple">Посмотреть меню</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-white text-center py-3" style="background: linear-gradient(45deg, #ff416c, #ff4b2b);">
+                    <h2 class="mb-0 fw-bold">Обед</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Понедельник</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Вторник</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Среда</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Четверг</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Пятница</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Суббота</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-5" style="color: #333;">Воскресенье</span>
+                            <a href="" class="btn btn-orange">Посмотреть меню</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-purple {
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+    }
+
+    .btn-orange {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+    }
+
+    .btn-purple:hover, .btn-orange:hover {
+        transform: scale(1.05);
+        text-decoration: none;
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .list-group-item {
+        background-color: transparent;
+    }
+
+    body {
+        background-color: #f8f9fa;
+    }
+</style>
 {% endblock %}
