@@ -27,7 +27,6 @@ def get_menu_context():
 
 def index(request):
     contex = {
-        'author': 'Maxim',
         'menu': get_menu_context()
     }
 
