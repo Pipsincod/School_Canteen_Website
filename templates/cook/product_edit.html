@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if product %}Редактирование продукта{% else %}Новый продукт{% endif %} | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% if product %}Редактирование продукта{% else %}Новый продукт{% endif %}</h1>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Название</label>
+            <input type="text" name="name" class="form-input" 
+                   value="{{ product.name|default:'' }}" placeholder="Молоко" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Количество на складе</label>
+            <input type="number" name="amount" class="form-input" 
+                   value="{{ product.amount|default:0 }}" min="0" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Аллергены</label>
+            <div class="checkbox-list">
+                {% for alergen in form.alergens_choices.field.queryset %}
+                <label>
+                    <input type="checkbox" name="alergens_choices" value="{{ alergen.id }}"
+                        {% if alergen in form.alergens_choices.initial %}checked{% endif %}>
+                    {{ alergen.name }}
+                </label>
+                {% empty %}
+                <p class="text-muted">Аллергены не добавлены в систему</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'cook_products' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

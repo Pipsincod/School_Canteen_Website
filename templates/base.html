@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Умная столовая{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --yellow: #FFD700;
+            --yellow-dark: #FFC107;
+            --yellow-light: #FFF9C4;
+            --gray-light: #F5F5F5;
+            --gray-border: #E0E0E0;
+            --text-dark: #212121;
+            --text-light: #757575;
+        }
+    </style>
+</head>
+<body style="background-color: var(--white); font-family: 'Inter', sans-serif; color: var(--text-dark); margin: 0;">
+    {% if user.is_authenticated %}
+    <nav class="navbar" style="background-color: var(--white); border-bottom: 2px solid var(--yellow); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(255, 215, 0, 0.1);">
+        <a href="{% url 'dashboard' %}" class="navbar-brand" style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: var(--yellow);">️</span> Умная столовая
+        </a>
+
+        <ul class="navbar-nav" style="display: flex; list-style: none; margin: 0; padding: 0; gap: 1.5rem;">
+            {% if user.role == 'student' %}
+                <li>
+                    <a href="{% url 'student_menu' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'student_menu' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'student_menu' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Меню
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'student_payment' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'student_payment' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'student_payment' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Оплата
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'student_subscription' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'student_subscription' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'student_subscription' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Абонемент
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'student_reviews' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'student_reviews' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'student_reviews' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Отзывы
+                    </a>
+                </li>
+            {% elif user.role == 'cook' %}
+                <li>
+                    <a href="{% url 'cook_dashboard' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'cook_dashboard' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'cook_dashboard' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Главная
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'cook_menu' %}"
+                       class="nav-link {% if 'menu' in request.resolver_match.url_name %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if 'menu' in request.resolver_match.url_name %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Меню
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'cook_dishes' %}"
+                       class="nav-link {% if 'dish' in request.resolver_match.url_name %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if 'dish' in request.resolver_match.url_name %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Блюда
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'cook_products' %}"
+                       class="nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if 'product' in request.resolver_match.url_name %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Склад
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'cook_applications' %}"
+                       class="nav-link {% if 'application' in request.resolver_match.url_name %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if 'application' in request.resolver_match.url_name %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Заявки
+                    </a>
+                </li>
+            {% elif user.role == 'admin' %}
+                <li>
+                    <a href="{% url 'admin_dashboard' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Главная
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_applications' %}"
+                       class="nav-link {% if 'applications' in request.resolver_match.url_name %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if 'applications' in request.resolver_match.url_name %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Заявки
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_statistics' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'admin_statistics' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'admin_statistics' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Статистика
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_reports' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'admin_reports' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Отчеты
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_users' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}"
+                       style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-dark); font-weight: 500; transition: all 0.2s; {% if request.resolver_match.url_name == 'admin_users' %}background-color: var(--yellow); color: var(--text-dark);{% endif %}">
+                       Пользователи
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <div class="navbar-user" style="display: flex; align-items: center; gap: 1.5rem;">
+            {% if user.role == 'student' %}
+                <span class="user-balance" style="background-color: var(--yellow); color: var(--text-dark); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">
+                    {{ user.balance }} ₽
+                </span>
+            {% endif %}
+            <a href="{% url 'profile' %}" class="nav-link" style="text-decoration: none; color: var(--text-dark); font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s;">
+                {{ user.name }}
+            </a>
+            <a href="{% url 'logout' %}" class="nav-link" style="text-decoration: none; background-color: var(--yellow); color: var(--text-dark); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 500; transition: all 0.2s;">
+                Выход
+            </a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}"
+                     style="background-color: {% if message.tags == 'success' %}var(--yellow-light){% elif message.tags == 'error' %}#FFEBEE{% else %}var(--yellow-light){% endif %};
+                            color: var(--text-dark);
+                            padding: 1rem;
+                            border-radius: 8px;
+                            border-left: 4px solid var(--yellow);
+                            margin-bottom: 1rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+
+    <style>
+        /* Добавляем hover-эффекты */
+        .nav-link:hover:not(.active) {
+            background-color: var(--yellow-light) !important;
+        }
+
+        a[href="{% url 'logout' %}"]:hover {
+            background-color: var(--yellow-dark) !important;
+        }
+
+        /* Общие стили для кнопок в контенте */
+        .btn {
+            background-color: var(--yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: var(--yellow-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border: 2px solid var(--yellow);
+        }
+
+        /* Карточки */
+        .card {
+            background-color: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.05);
+        }
+
+        /* Формы */
+        input, select, textarea {
+            border: 2px solid var(--gray-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+    </style>
+</body>
+</html>

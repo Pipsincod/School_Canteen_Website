@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Отчеты | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Формирование отчетов</h1>
+    <p class="page-subtitle">Сводная информация по питанию и затратам</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">📅 Выбор периода</h2>
+    </div>
+    
+    <form method="get" class="flex gap-2 flex-center">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">С</label>
+            <input type="date" name="start_date" value="{{ start_date }}" class="form-input">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">По</label>
+            <input type="date" name="end_date" value="{{ end_date }}" class="form-input">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">Сформировать</button>
+    </form>
+</div>
+
+<div class="grid grid-2 mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">💰 Финансы</h2>
+        </div>
+        
+        <div class="section">
+            <div class="flex flex-between mb-2">
+                <span>Поступления (оплаты):</span>
+                <strong class="text-success">+{{ report.payments_total }} ₽</strong>
+            </div>
+            <div class="flex flex-between mb-2">
+                <span>Количество платежей:</span>
+                <strong>{{ report.payments_count }}</strong>
+            </div>
+            <div class="flex flex-between mb-2">
+                <span>Расходы (закупки):</span>
+                <strong class="text-danger">-{{ report.expenses }} ₽</strong>
+            </div>
+            <hr style="border-color: var(--border); margin: 1rem 0;">
+            <div class="flex flex-between">
+                <span><strong>Баланс:</strong></span>
+                <strong class="text-primary" style="font-size: 1.25rem;">
+                    {% widthratio report.payments_total 1 1 as total %}
+                    {% widthratio report.expenses 1 1 as exp %}
+                    {{ report.payments_total|add:"-"|add:report.expenses }} ₽
+                </strong>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">🍽️ Посещаемость</h2>
+        </div>
+        
+        <div class="section">
+            <div class="flex flex-between mb-2">
+                <span>Всего выдано питания:</span>
+                <strong>{{ report.attendance_total }}</strong>
+            </div>
+            <div class="flex flex-between mb-2">
+                <span>🌅 Завтраков:</span>
+                <strong>{{ report.breakfasts }}</strong>
+            </div>
+            <div class="flex flex-between mb-2">
+                <span>☀️ Обедов:</span>
+                <strong>{{ report.lunches }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h2 class="card-title">📊 Сводка</h2>
+    </div>
+    
+    <div class="alert alert-info">
+        <strong>Период:</strong> {{ start_date }} — {{ end_date }}<br>
+        <strong>Доходы:</strong> {{ report.payments_total }} ₽ | 
+        <strong>Расходы:</strong> {{ report.expenses }} ₽ | 
+        <strong>Питание выдано:</strong> {{ report.attendance_total }} раз
+    </div>
+</div>
+{% endblock %}

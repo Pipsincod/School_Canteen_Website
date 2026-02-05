@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Пользователи | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Пользователи</h1>
+    <p class="page-subtitle">Управление аккаунтами</p>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>ФИО</th>
+                <th>Email</th>
+                <th>Роль</th>
+                <th>Баланс</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td><strong>{{ u.login }}</strong></td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                    {% if u.role == 'student' %}
+                        <span class="badge badge-primary">Ученик</span>
+                    {% elif u.role == 'cook' %}
+                        <span class="badge badge-warning">Повар</span>
+                    {% else %}
+                        <span class="badge badge-success">Админ</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.role == 'student' %}
+                        {{ u.balance }} ₽
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.is_active %}
+                        <span class="badge badge-success">Активен</span>
+                    {% else %}
+                        <span class="badge badge-danger">Заблокирован</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Оплата | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Пополнение баланса</h1>
+    <p class="page-subtitle">Текущий баланс: <strong>{{ user.balance }} ₽</strong></p>
+</div>
+
+<div class="grid grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">💳 Пополнить баланс</h2>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Сумма пополнения</label>
+                <input type="number" name="amount" min="1" class="form-input" placeholder="Введите сумму" required>
+            </div>
+            
+            <div class="grid grid-3 mb-3">
+                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 100">100 ₽</button>
+                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 500">500 ₽</button>
+                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 1000">1000 ₽</button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Пополнить</button>
+        </form>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">📜 История платежей</h2>
+        </div>
+        
+        {% if payments %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.date|date:"d.m.Y" }}</td>
+                    <td><strong>{{ payment.amount }} ₽</strong></td>
+                    <td>
+                        {% if payment.succesful %}
+                            <span class="badge badge-success">Успешно</span>
+                        {% else %}
+                            <span class="badge badge-danger">Ошибка</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>История платежей пуста</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

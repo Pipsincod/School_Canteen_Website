@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Управление меню | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header flex flex-between flex-center">
+    <div>
+        <h1 class="page-title">Управление меню</h1>
+        <p class="page-subtitle">Составляйте меню на каждый день</p>
+    </div>
+    <a href="{% url 'cook_menu_create' %}" class="btn btn-primary">+ Создать меню</a>
+</div>
+
+<div class="card">
+    {% if menus %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Завтрак</th>
+                <th>Обед</th>
+                <th>Выдано</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for menu in menus %}
+            <tr>
+                <td><strong>{{ menu.date|date:"d.m.Y" }}</strong></td>
+                <td>
+                    {% for dish in menu.get_breakfast_dishes %}
+                        <span class="badge badge-primary">{{ dish.name }}</span>
+                    {% empty %}
+                        <span class="text-muted">—</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for dish in menu.get_lunch_dishes %}
+                        <span class="badge badge-primary">{{ dish.name }}</span>
+                    {% empty %}
+                        <span class="text-muted">—</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    🌅 {{ menu.given_breakfasts_amount }} / ☀️ {{ menu.given_lunches_amount }}
+                </td>
+                <td>
+                    <a href="{% url 'cook_menu_edit' menu.id %}" class="btn btn-secondary btn-sm">Изменить</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>Меню еще не создано</p>
+        <a href="{% url 'cook_menu_create' %}" class="btn btn-primary mt-2">Создать первое меню</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

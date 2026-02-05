@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзыв о {{ dish.name }} | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Отзыв о блюде</h1>
+    <p class="page-subtitle">{{ dish.name }} — {{ dish.price }} ₽</p>
+</div>
+
+<div class="card" style="max-width: 500px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Оценка</label>
+            <select name="review" class="form-input" required>
+                <option value="5" {% if form.instance.review == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ Отлично (5)</option>
+                <option value="4" {% if form.instance.review == 4 %}selected{% endif %}>⭐⭐⭐⭐ Хорошо (4)</option>
+                <option value="3" {% if form.instance.review == 3 %}selected{% endif %}>⭐⭐⭐ Нормально (3)</option>
+                <option value="2" {% if form.instance.review == 2 %}selected{% endif %}>⭐⭐ Плохо (2)</option>
+                <option value="1" {% if form.instance.review == 1 %}selected{% endif %}>⭐ Ужасно (1)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Комментарий (необязательно)</label>
+            <textarea name="comment" class="form-input" rows="3" placeholder="Ваши впечатления о блюде...">{{ form.instance.comment }}</textarea>
+        </div>
+        
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'student_reviews' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

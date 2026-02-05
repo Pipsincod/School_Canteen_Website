@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Панель повара | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Панель повара</h1>
+    <p class="page-subtitle">{{ today|date:"d.m.Y" }}</p>
+</div>
+
+<div class="grid grid-3">
+    <div class="stat-card">
+        <div class="stat-icon">🍳</div>
+        <div class="stat-info">
+            <h3>{{ menu.given_breakfasts_amount|default:0 }}</h3>
+            <p>Выдано завтраков</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">🍲</div>
+        <div class="stat-info">
+            <h3>{{ menu.given_lunches_amount|default:0 }}</h3>
+            <p>Выдано обедов</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-info">
+            <h3>{{ low_stock.count }}</h3>
+            <p>Продуктов на исходе</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-2 mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">📋 Меню на сегодня</h2>
+            <a href="{% url 'cook_menu' %}" class="btn btn-secondary btn-sm">Все меню</a>
+        </div>
+        
+        {% if menu %}
+            <div class="section">
+                <h4 class="mb-1">🌅 Завтрак:</h4>
+                {% for dish in menu.get_breakfast_dishes %}
+                    <span class="badge badge-primary">{{ dish.name }}</span>
+                {% empty %}
+                    <span class="text-muted">Не указано</span>
+                {% endfor %}
+            </div>
+            
+            <div class="section">
+                <h4 class="mb-1">☀️ Обед:</h4>
+                {% for dish in menu.get_lunch_dishes %}
+                    <span class="badge badge-primary">{{ dish.name }}</span>
+                {% empty %}
+                    <span class="text-muted">Не указано</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>Меню на сегодня не составлено</p>
+                <a href="{% url 'cook_menu_create' %}" class="btn btn-primary mt-2">Создать меню</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">⚠️ Продукты на исходе</h2>
+            <a href="{% url 'cook_products' %}" class="btn btn-secondary btn-sm">Все продукты</a>
+        </div>
+        
+        {% if low_stock %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Продукт</th>
+                    <th>Остаток</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in low_stock %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <span class="badge {% if product.amount < 5 %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ product.amount }} шт.
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'cook_application_create' %}" class="btn btn-primary btn-block mt-2">Создать заявку на закупку</a>
+        {% else %}
+        <div class="empty-state">
+            <p>Все продукты в наличии ✓</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h2 class="card-title">📝 Мои заявки на закупку</h2>
+        <a href="{% url 'cook_applications' %}" class="btn btn-secondary btn-sm">Все заявки</a>
+    </div>
+    
+    {% if my_applications %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in my_applications %}
+            <tr>
+                <td>#{{ app.id }}</td>
+                <td>{{ app.date|date:"d.m.Y" }}</td>
+                <td>{{ app.price }} ₽</td>
+                <td>
+                    {% if app.status == 'pending' %}
+                        <span class="badge badge-warning">На рассмотрении</span>
+                    {% elif app.status == 'approved' %}
+                        <span class="badge badge-success">Одобрена</span>
+                    {% else %}
+                        <span class="badge badge-danger">Отклонена</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>Заявок пока нет</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

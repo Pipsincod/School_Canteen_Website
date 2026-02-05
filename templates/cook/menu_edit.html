@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if menu %}Редактирование меню{% else %}Создание меню{% endif %} | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% if menu %}Редактирование меню{% else %}Создание меню{% endif %}</h1>
+    <p class="page-subtitle">{% if menu %}{{ menu.date|date:"d.m.Y" }}{% else %}Выберите дату и блюда{% endif %}</p>
+</div>
+
+<div class="card" style="max-width: 700px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Дата</label>
+            <input type="date" name="date" class="form-input" 
+                   value="{% if menu %}{{ menu.date|date:'Y-m-d' }}{% endif %}" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">🌅 Блюда на завтрак</label>
+            <div class="checkbox-list">
+                {% for dish in form.breakfast_dishes.field.queryset %}
+                <label>
+                    <input type="checkbox" name="breakfast_dishes" value="{{ dish.id }}"
+                        {% if dish in form.breakfast_dishes.initial %}checked{% endif %}>
+                    {{ dish.name }} ({{ dish.price }} ₽)
+                </label>
+                {% empty %}
+                <p class="text-muted">Блюда не добавлены. <a href="{% url 'cook_dish_create' %}">Создать блюдо</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">☀️ Блюда на обед</label>
+            <div class="checkbox-list">
+                {% for dish in form.lunch_dishes.field.queryset %}
+                <label>
+                    <input type="checkbox" name="lunch_dishes" value="{{ dish.id }}"
+                        {% if dish in form.lunch_dishes.initial %}checked{% endif %}>
+                    {{ dish.name }} ({{ dish.price }} ₽)
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'cook_menu' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

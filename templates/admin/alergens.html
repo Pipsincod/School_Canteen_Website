@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Аллергены | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Справочник аллергенов</h1>
+    <p class="page-subtitle">Управление списком аллергенов в системе</p>
+</div>
+
+<div class="grid grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">➕ Добавить аллерген</h2>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Название</label>
+                <input type="text" name="name" class="form-input" placeholder="Например: Глютен" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">📋 Список аллергенов</h2>
+        </div>
+        
+        {% if alergens %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alergen in alergens %}
+                <tr>
+                    <td>{{ alergen.id }}</td>
+                    <td><strong>{{ alergen.name }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>Аллергены еще не добавлены</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

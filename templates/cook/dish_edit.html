@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if dish %}Редактирование блюда{% else %}Новое блюдо{% endif %} | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% if dish %}Редактирование блюда{% else %}Новое блюдо{% endif %}</h1>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Название</label>
+            <input type="text" name="name" class="form-input" 
+                   value="{{ dish.name|default:'' }}" placeholder="Каша овсяная" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Цена (₽)</label>
+            <input type="number" name="price" class="form-input" 
+                   value="{{ dish.price|default:0 }}" min="0" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Количество порций</label>
+            <input type="number" name="amount" class="form-input" 
+                   value="{{ dish.amount|default:0 }}" min="0" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Продукты в составе</label>
+            <div class="checkbox-list">
+                {% for product in form.products_choices.field.queryset %}
+                <label>
+                    <input type="checkbox" name="products_choices" value="{{ product.id }}"
+                        {% if product in form.products_choices.initial %}checked{% endif %}>
+                    {{ product.name }}
+                </label>
+                {% empty %}
+                <p class="text-muted">Продукты не добавлены. <a href="{% url 'cook_product_create' %}">Добавить продукт</a></p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'cook_dishes' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

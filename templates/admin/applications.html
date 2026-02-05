@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Заявки на закупку | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Заявки на закупку</h1>
+    <p class="page-subtitle">Согласование заявок от поваров</p>
+</div>
+
+<div class="card">
+    {% if applications %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Дата</th>
+                <th>Повар</th>
+                <th>Продукты</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td><strong>#{{ app.id }}</strong></td>
+                <td>{{ app.date|date:"d.m.Y" }}</td>
+                <td>{{ app.user.name }}</td>
+                <td>
+                    {% for product, amount in app.get_products_with_amounts %}
+                        <span class="badge badge-primary">{{ product.name }}: {{ amount }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ app.price }} ₽</td>
+                <td>
+                    {% if app.status == 'pending' %}
+                        <span class="badge badge-warning">На рассмотрении</span>
+                    {% elif app.status == 'approved' %}
+                        <span class="badge badge-success">Одобрена</span>
+                    {% else %}
+                        <span class="badge badge-danger">Отклонена</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if app.status == 'pending' %}
+                        <a href="{% url 'admin_application_action' app.id 'approve' %}" class="btn btn-success btn-sm">Одобрить</a>
+                        <a href="{% url 'admin_application_action' app.id 'reject' %}" class="btn btn-danger btn-sm">Отклонить</a>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>Заявок пока нет</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Абонемент | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Абонемент на питание</h1>
+    <p class="page-subtitle">Оплачивайте питание заранее и экономьте</p>
+</div>
+
+{% if active_subscription %}
+<div class="alert alert-success">
+    ✨ У вас активный абонемент до <strong>{{ active_subscription.end_date|date:"d.m.Y" }}</strong>
+    ({{ active_subscription.get_meal_type_display }})
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Оформить абонемент</h2>
+        <span class="text-muted">Баланс: {{ user.balance }} ₽</span>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Длительность</label>
+            <select name="duration" class="form-input" id="duration">
+                <option value="7">1 неделя (7 дней)</option>
+                <option value="14">2 недели (14 дней)</option>
+                <option value="30">1 месяц (30 дней)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Тип питания</label>
+            <select name="meal_type" class="form-input" id="meal_type">
+                <option value="breakfast">Только завтрак</option>
+                <option value="lunch">Только обед</option>
+                <option value="both">Завтрак и обед</option>
+            </select>
+        </div>
+        
+        <div class="card mb-3" style="background: var(--primary-bg);">
+            <h3 class="mb-2">Стоимость: <span id="price">700</span> ₽</h3>
+            <p class="text-muted">Цена зависит от выбранных параметров</p>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Оформить абонемент</button>
+    </form>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h2 class="card-title">📋 Тарифы</h2>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Период</th>
+                <th>Завтрак</th>
+                <th>Обед</th>
+                <th>Завтрак + Обед</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1 неделя</td>
+                <td>700 ₽</td>
+                <td>1000 ₽</td>
+                <td>1500 ₽</td>
+            </tr>
+            <tr>
+                <td>2 недели</td>
+                <td>1300 ₽</td>
+                <td>1900 ₽</td>
+                <td>2800 ₽</td>
+            </tr>
+            <tr>
+                <td>1 месяц</td>
+                <td>2500 ₽</td>
+                <td>3800 ₽</td>
+                <td>5500 ₽</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const prices = {
+    '7': {'breakfast': 700, 'lunch': 1000, 'both': 1500},
+    '14': {'breakfast': 1300, 'lunch': 1900, 'both': 2800},
+    '30': {'breakfast': 2500, 'lunch': 3800, 'both': 5500}
+};
+
+function updatePrice() {
+    const duration = document.getElementById('duration').value;
+    const mealType = document.getElementById('meal_type').value;
+    document.getElementById('price').textContent = prices[duration][mealType];
+}
+
+document.getElementById('duration').addEventListener('change', updatePrice);
+document.getElementById('meal_type').addEventListener('change', updatePrice);
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Статистика</h1>
+    <p class="page-subtitle">За период {{ month_ago|date:"d.m.Y" }} — {{ today|date:"d.m.Y" }}</p>
+</div>
+
+<div class="grid grid-3">
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+            <h3>{{ payments_total }} ₽</h3>
+            <p>Оплат за месяц ({{ payments_count }} платежей)</p>
+        </div>
+    </div>
+    
+    {% for item in attendance_by_type %}
+    <div class="stat-card">
+        <div class="stat-icon">
+            {% if item.meal_type == 'breakfast' %}🌅{% else %}☀️{% endif %}
+        </div>
+        <div class="stat-info">
+            <h3>{{ item.count }}</h3>
+            <p>{% if item.meal_type == 'breakfast' %}Завтраков{% else %}Обедов{% endif %} выдано</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h2 class="card-title">⭐ Популярные блюда (по оценкам)</h2>
+    </div>
+    
+    {% if popular_dishes %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Блюдо</th>
+                <th>Средняя оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dish in popular_dishes %}
+            <tr>
+                <td><strong>{{ dish.name }}</strong></td>
+                <td>
+                    <div class="rating">
+                        {% for i in "12345" %}
+                            <span class="rating-star {% if forloop.counter <= dish.avg_rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет данных об оценках</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

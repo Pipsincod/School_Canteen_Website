@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои заявки | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header flex flex-between flex-center">
+    <div>
+        <h1 class="page-title">Мои заявки на закупку</h1>
+        <p class="page-subtitle">История заявок на пополнение склада</p>
+    </div>
+    <a href="{% url 'cook_application_create' %}" class="btn btn-primary">+ Создать заявку</a>
+</div>
+
+<div class="card">
+    {% if applications %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Дата</th>
+                <th>Продукты</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td><strong>#{{ app.id }}</strong></td>
+                <td>{{ app.date|date:"d.m.Y" }}</td>
+                <td>
+                    {% for product, amount in app.get_products_with_amounts %}
+                        <span class="badge badge-primary">{{ product.name }}: {{ amount }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ app.price }} ₽</td>
+                <td>
+                    {% if app.status == 'pending' %}
+                        <span class="badge badge-warning">На рассмотрении</span>
+                    {% elif app.status == 'approved' %}
+                        <span class="badge badge-success">Одобрена</span>
+                    {% else %}
+                        <span class="badge badge-danger">Отклонена</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <p>Заявок пока нет</p>
+        <a href="{% url 'cook_application_create' %}" class="btn btn-primary mt-2">Создать первую заявку</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

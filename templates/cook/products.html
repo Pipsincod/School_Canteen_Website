@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Склад продуктов | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header flex flex-between flex-center">
+    <div>
+        <h1 class="page-title">Склад продуктов</h1>
+        <p class="page-subtitle">Контроль остатков</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="{% url 'cook_application_create' %}" class="btn btn-secondary">📝 Создать заявку</a>
+        <a href="{% url 'cook_product_create' %}" class="btn btn-primary">+ Добавить продукт</a>
+    </div>
+</div>
+
+<div class="card">
+    {% if products %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Остаток</th>
+                <th>Аллергены</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td><strong>{{ product.name }}</strong></td>
+                <td>
+                    {% if product.amount < 5 %}
+                        <span class="badge badge-danger">{{ product.amount }} шт.</span>
+                    {% elif product.amount < 10 %}
+                        <span class="badge badge-warning">{{ product.amount }} шт.</span>
+                    {% else %}
+                        <span class="badge badge-success">{{ product.amount }} шт.</span>
+                    {% endif %}
+                </td>
+                <td>{{ product.alergens|default:"—" }}</td>
+                <td>
+                    <a href="{% url 'cook_product_edit' product.id %}" class="btn btn-secondary btn-sm">Изменить</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p>Продукты еще не добавлены</p>
+        <a href="{% url 'cook_product_create' %}" class="btn btn-primary mt-2">Добавить первый продукт</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

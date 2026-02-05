@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзывы | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Отзывы о блюдах</h1>
+    <p class="page-subtitle">Оцените блюда и помогите улучшить меню</p>
+</div>
+
+<div class="grid grid-3">
+    {% for dish in dishes %}
+    <div class="card">
+        <h3 class="mb-2">{{ dish.name }}</h3>
+        <p class="text-muted mb-2">{{ dish.price }} ₽</p>
+        
+        {% if dish.user_review %}
+        <div class="mb-2">
+            <div class="rating">
+                {% for i in "12345" %}
+                    <span class="rating-star {% if forloop.counter <= dish.user_review.review %}filled{% endif %}">★</span>
+                {% endfor %}
+            </div>
+            {% if dish.user_review.comment %}
+            <p class="text-muted mt-1" style="font-size: 0.875rem;">{{ dish.user_review.comment }}</p>
+            {% endif %}
+        </div>
+        <a href="{% url 'student_add_review' dish.id %}" class="btn btn-secondary btn-sm">Изменить отзыв</a>
+        {% else %}
+        <a href="{% url 'student_add_review' dish.id %}" class="btn btn-outline btn-sm">Оставить отзыв</a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="empty-state">
+            <div class="empty-state-icon">🍽️</div>
+            <p>Блюда еще не добавлены в систему</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

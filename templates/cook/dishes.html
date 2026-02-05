@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Блюда | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header flex flex-between flex-center">
+    <div>
+        <h1 class="page-title">Блюда</h1>
+        <p class="page-subtitle">Управление списком блюд</p>
+    </div>
+    <a href="{% url 'cook_dish_create' %}" class="btn btn-primary">+ Добавить блюдо</a>
+</div>
+
+<div class="card">
+    {% if dishes %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Порций</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dish in dishes %}
+            <tr>
+                <td>{{ dish.id }}</td>
+                <td><strong>{{ dish.name }}</strong></td>
+                <td>{{ dish.price }} ₽</td>
+                <td>{{ dish.amount }}</td>
+                <td>
+                    <a href="{% url 'cook_dish_edit' dish.id %}" class="btn btn-secondary btn-sm">Изменить</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🍽️</div>
+        <p>Блюда еще не добавлены</p>
+        <a href="{% url 'cook_dish_create' %}" class="btn btn-primary mt-2">Добавить первое блюдо</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

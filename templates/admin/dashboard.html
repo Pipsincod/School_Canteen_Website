@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Панель администратора | Умная столовая{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Панель администратора</h1>
+    <p class="page-subtitle">{{ today|date:"d.m.Y" }}</p>
+</div>
+
+<div class="grid grid-4">
+    <div class="stat-card">
+        <div class="stat-icon">👨‍🎓</div>
+        <div class="stat-info">
+            <h3>{{ stats.total_users }}</h3>
+            <p>Учеников</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+            <h3>{{ stats.payments_week }} ₽</h3>
+            <p>Оплат за неделю</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">🍽️</div>
+        <div class="stat-info">
+            <h3>{{ stats.attendance_today }}</h3>
+            <p>Питались сегодня</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+            <h3>{{ stats.pending_applications }}</h3>
+            <p>Заявок на рассмотрении</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-2 mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">📋 Заявки на рассмотрении</h2>
+            <a href="{% url 'admin_applications' %}" class="btn btn-secondary btn-sm">Все заявки</a>
+        </div>
+        
+        {% if pending_applications %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>От</th>
+                    <th>Сумма</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in pending_applications %}
+                <tr>
+                    <td>#{{ app.id }}</td>
+                    <td>{{ app.user.name }}</td>
+                    <td>{{ app.price }} ₽</td>
+                    <td>
+                        <a href="{% url 'admin_application_action' app.id 'approve' %}" class="btn btn-success btn-sm">✓</a>
+                        <a href="{% url 'admin_application_action' app.id 'reject' %}" class="btn btn-danger btn-sm">✗</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>Нет заявок на рассмотрении ✓</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">🔗 Быстрые действия</h2>
+        </div>
+        
+        <div class="grid grid-2 gap-2">
+            <a href="{% url 'admin_statistics' %}" class="btn btn-secondary btn-block">📊 Статистика</a>
+            <a href="{% url 'admin_reports' %}" class="btn btn-secondary btn-block">📄 Отчеты</a>
+            <a href="{% url 'admin_users' %}" class="btn btn-secondary btn-block">👥 Пользователи</a>
+            <a href="{% url 'admin_alergens' %}" class="btn btn-secondary btn-block">⚠️ Аллергены</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
