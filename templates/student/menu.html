@@ -1,134 +1,248 @@
 {% extends 'base.html' %}
+
+{% block title %}Умная столовая{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-5 fw-bold" style="color: #6a11cb;">Что сегодня в меню?</h1>
-
-    <div class="row g-5">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-lg">
-                <div class="card-header text-white text-center py-3" style="background: linear-gradient(45deg, #6a11cb, #2575fc);">
-                    <h2 class="mb-0 fw-bold">Завтрак</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Понедельник</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Вторник</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Среда</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Четверг</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Пятница</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Суббота</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Воскресенье</span>
-                            <a href="" class="btn btn-purple">Посмотреть меню</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="page-header">
+    <div class="flex flex-between flex-center">
+        <div>
+            <h1 class="page-title">Еда на {{ today|date:"d.m.Y" }}</h1>
+            <p class="page-subtitle">Закажите питание на сегодня</p>
         </div>
-
-        <div class="col-md-6">
-            <div class="card border-0 shadow-lg">
-                <div class="card-header text-white text-center py-3" style="background: linear-gradient(45deg, #ff416c, #ff4b2b);">
-                    <h2 class="mb-0 fw-bold">Обед</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Понедельник</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Вторник</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Среда</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Четверг</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Пятница</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Суббота</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                        <div class="list-group-item border-0 py-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold fs-5" style="color: #333;">Воскресенье</span>
-                            <a href="" class="btn btn-orange">Посмотреть меню</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="text-right">
+            <div class="text-muted" style="font-size: 0.9rem;">Баланс</div>
+            <div class="text-primary" style="font-size: 1.5rem; font-weight: 700;">{{ user.balance }} ₽</div>
         </div>
     </div>
 </div>
 
+{% if subscription %}
+<div class="alert alert-info" style="border-left: 4px solid #FFD700;">
+    <div class="flex flex-between flex-center">
+        <div>
+            <strong>🎫 Активная подписка</strong> до {{ subscription.end_date|date:"d.m.Y" }}
+            <span class="text-muted">({{ subscription.get_meal_type_display }})</span>
+        </div>
+        <span class="badge badge-primary" style="background-color: #FFF9C4; color: #212121;">
+            {{ subscription.days_left }} дней осталось
+        </span>
+    </div>
+</div>
+{% endif %}
+
+{% if not menu %}
+<div class="card">
+    <div class="empty-state">
+        <div style="font-size: 4rem; margin-bottom: 1rem; color: #FFD700; opacity: 0.7;">🍽️</div>
+        <h3>Меню не готово</h3>
+        <p class="text-muted">Меню на сегодня еще не опубликовано</p>
+    </div>
+</div>
+{% else %}
+
+<div class="grid grid-2">
+    <!-- Блок завтрака -->
+    <div class="card">
+        <div class="card-header">
+            <div class="flex flex-between flex-center">
+                <div>
+                    <h2 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">🌅</span>
+                        Утреннее питание
+                    </h2>
+                    <p class="text-muted" style="margin: 0; font-size: 0.9rem;">С 8:00 до 10:00</p>
+                </div>
+                {% if breakfast_taken %}
+                <div class="text-right">
+                    <div class="badge badge-success">✅ Получен</div>
+                    <small class="text-muted" style="font-size: 0.8rem;">Сегодня</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if breakfast_dishes %}
+            <div class="mb-3">
+                {% for dish in breakfast_dishes %}
+                <div class="flex flex-between flex-center"
+                     style="padding: 0.75rem; {% if not forloop.last %}border-bottom: 1px solid var(--gray-border);{% endif %}">
+                    <div>
+                        <div style="font-weight: 600;">{{ dish.name }}</div>
+                        {% if dish.has_allergen %}
+                        <small style="color: #f59e0b; display: flex; align-items: center; gap: 0.25rem;">
+                            ⚠️ Содержит аллергены
+                        </small>
+                        {% else %}
+                        <small class="text-muted">Безопасно</small>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
+                        <div style="font-weight: 700; font-size: 1.25rem;">{{ dish.price }} ₽</div>
+                        <small class="text-muted">за порцию</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if not breakfast_taken %}
+            <div class="mt-2">
+                <a href="{% url 'student_take_meal' 'breakfast' %}" class="btn btn-primary btn-block">
+                    <span style="margin-right: 0.5rem;">🍳</span>
+                    Заказать завтрак
+                </a>
+            </div>
+            {% else %}
+            <div class="mt-2 text-center">
+                <small class="text-muted">Вы уже получили завтрак сегодня</small>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center" style="padding: 2rem;">
+                <div style="font-size: 3rem; color: #E0E0E0; margin-bottom: 1rem;">🥐</div>
+                <p class="text-muted">Блюда не добавлены</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Блок обеда -->
+    <div class="card">
+        <div class="card-header">
+            <div class="flex flex-between flex-center">
+                <div>
+                    <h2 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">☀️</span>
+                        Дневное питание
+                    </h2>
+                    <p class="text-muted" style="margin: 0; font-size: 0.9rem;">С 12:00 до 15:00</p>
+                </div>
+                {% if lunch_taken %}
+                <div class="text-right">
+                    <div class="badge badge-success">✅ Получен</div>
+                    <small class="text-muted" style="font-size: 0.8rem;">Сегодня</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if lunch_dishes %}
+            <div class="mb-3">
+                {% for dish in lunch_dishes %}
+                <div class="flex flex-between flex-center"
+                     style="padding: 0.75rem; {% if not forloop.last %}border-bottom: 1px solid var(--gray-border);{% endif %}">
+                    <div>
+                        <div style="font-weight: 600;">{{ dish.name }}</div>
+                        {% if dish.has_allergen %}
+                        <small style="color: #f59e0b; display: flex; align-items: center; gap: 0.25rem;">
+                            ⚠️ Содержит аллергены
+                        </small>
+                        {% else %}
+                        <small class="text-muted">Безопасно</small>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
+                        <div style="font-weight: 700; font-size: 1.25rem;">{{ dish.price }} ₽</div>
+                        <small class="text-muted">за порцию</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if not lunch_taken %}
+            <div class="mt-2">
+                <a href="{% url 'student_take_meal' 'lunch' %}" class="btn btn-primary btn-block">
+                    <span style="margin-right: 0.5rem;">🍲</span>
+                    Заказать обед
+                </a>
+            </div>
+            {% else %}
+            <div class="mt-2 text-center">
+                <small class="text-muted">Вы уже получили обед сегодня</small>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center" style="padding: 2rem;">
+                <div style="font-size: 3rem; color: #E0E0E0; margin-bottom: 1rem;">🍛</div>
+                <p class="text-muted">Блюда не добавлены</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endif %}
+
+<div class="grid grid-2 mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">💡 Информация</h2>
+        </div>
+        <div style="padding: 0.5rem 0;">
+            <div class="flex" style="gap: 1rem; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <div style="font-size: 1.5rem;">⏰</div>
+                <div>
+                    <div style="font-weight: 600;">Время работы</div>
+                    <small class="text-muted">8:00 - 16:00</small>
+                </div>
+            </div>
+            <div class="flex" style="gap: 1rem; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <div style="font-size: 1.5rem;">📍</div>
+                <div>
+                    <div style="font-weight: 600;">Место</div>
+                    <small class="text-muted">Столовая, 2 этаж</small>
+                </div>
+            </div>
+            <div class="flex" style="gap: 1rem; align-items: center; padding: 0.75rem;">
+                <div style="font-size: 1.5rem;">📞</div>
+                <div>
+                    <div style="font-weight: 600;">Контакты</div>
+                    <small class="text-muted">Вопросы по питанию</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">🚀 Действия</h2>
+        </div>
+        <div class="grid grid-2" style="gap: 0.75rem;">
+            <a href="{% url 'student_payment' %}" class="btn btn-outline" style="text-align: center; padding: 1rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💳</div>
+                <div>Пополнить</div>
+            </a>
+            <a href="{% url 'student_subscription' %}" class="btn btn-outline" style="text-align: center; padding: 1rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎫</div>
+                <div>Подписка</div>
+            </a>
+            <a href="{% url 'student_reviews' %}" class="btn btn-outline" style="text-align: center; padding: 1rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⭐</div>
+                <div>Отзывы</div>
+            </a>
+            <a href="#" class="btn btn-outline" style="text-align: center; padding: 1rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+                <div>Архив</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 <style>
-    .btn-purple {
-        background: linear-gradient(45deg, #6a11cb, #2575fc);
-        border: none;
-        color: white;
-        padding: 10px 25px;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        transform: scale(1);
-        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+    .btn-outline {
+        transition: all 0.2s;
     }
 
-    .btn-orange {
-        background: linear-gradient(45deg, #ff416c, #ff4b2b);
-        border: none;
-        color: white;
-        padding: 10px 25px;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        transform: scale(1);
-        box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+    .btn-outline:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
     }
 
-    .btn-purple:hover, .btn-orange:hover {
-        transform: scale(1.05);
-        text-decoration: none;
-        color: white;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    .grid-2.grid-2 {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .card {
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .list-group-item {
-        background-color: transparent;
-    }
-
-    body {
-        background-color: #f8f9fa;
+    @media (max-width: 768px) {
+        .grid-2.grid-2 {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
-{% endblock %}

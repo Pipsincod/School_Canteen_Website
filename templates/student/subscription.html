@@ -38,7 +38,7 @@
             <div class="mb-3">
                 <label class="form-label">Срок действия</label>
                 <div class="flex" style="gap: 0.5rem;">
-                    <button type="button" class="btn btn-outline flex-1 {% if not duration or duration == '7' %}active{% endif %}"
+                    <button type="button" class="btn btn-outline flex-1"
                             onclick="selectDuration('7')">
                         <div style="font-size: 1.25rem; font-weight: 600;">7</div>
                         <small class="text-muted">дней</small>
@@ -120,10 +120,7 @@
             </div>
             <div class="flex flex-between flex-center" style="padding: 0.75rem;">
                 <span class="text-muted">Дата окончания</span>
-                <span id="detail_end_date" style="font-weight: 600;">
-                    {% now "d.m.Y" as today %}
-                    {{ today|add_days:7 }}
-                </span>
+                <span id="detail_end_date" style="font-weight: 600;">-</span>
             </div>
         </div>
 
@@ -240,26 +237,27 @@ function updatePrice() {
     const saving = duration === '7' ? '15%' : duration === '14' ? '18%' : '20%';
     document.getElementById('detail_saving').textContent = saving;
 
-    // Дата окончания
+    // Дата окончания (расчет в JS)
     const today = new Date();
     const endDate = new Date(today);
     endDate.setDate(today.getDate() + parseInt(duration));
-    document.getElementById('detail_end_date').textContent =
-        endDate.toLocaleDateString('ru-RU');
+
+    // Форматирование даты в русском формате
+    const day = endDate.getDate().toString().padStart(2, '0');
+    const month = (endDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = endDate.getFullYear();
+    document.getElementById('detail_end_date').textContent = `${day}.${month}.${year}`;
 }
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
-    selectDuration('7');
-    selectMealType('breakfast');
-});
+    // Добавляем класс active к первой кнопке срока
+    document.querySelector('[onclick="selectDuration(\'7\')"]').classList.add('active');
+    // Добавляем класс active к первой кнопке типа питания
+    document.querySelector('[onclick="selectMealType(\'breakfast\')"]').classList.add('active');
 
-// Функция для добавления дней к дате (для Django template)
-function addDays(dateStr, days) {
-    const date = new Date(dateStr);
-    date.setDate(date.getDate() + parseInt(days));
-    return date.toLocaleDateString('ru-RU');
-}
+    updatePrice();
+});
 </script>
 
 <style>
