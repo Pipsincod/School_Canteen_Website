@@ -1,91 +1,166 @@
 {% extends 'base.html' %}
 
-{% block title %}Абонемент | Умная столовая{% endblock %}
+{% block title %}Питание по подписке | Умная столовая{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">Абонемент на питание</h1>
-    <p class="page-subtitle">Оплачивайте питание заранее и экономьте</p>
+    <h1 class="page-title">Подписка на питание</h1>
+    <p class="page-subtitle">Выгодные тарифы и удобная оплата</p>
 </div>
 
 {% if active_subscription %}
-<div class="alert alert-success">
-    ✨ У вас активный абонемент до <strong>{{ active_subscription.end_date|date:"d.m.Y" }}</strong>
-    ({{ active_subscription.get_meal_type_display }})
+<div class="alert alert-info">
+    <div class="flex flex-between flex-center">
+        <div>
+            ✅ <strong>Подписка активна</strong> до {{ active_subscription.end_date|date:"d.m.Y" }}
+            <span class="text-muted">({{ active_subscription.get_meal_type_display }})</span>
+        </div>
+        <span class="badge badge-primary">{{ active_subscription.days_left }} дней осталось</span>
+    </div>
 </div>
 {% endif %}
 
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">Оформить абонемент</h2>
-        <span class="text-muted">Баланс: {{ user.balance }} ₽</span>
+<div class="grid grid-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="flex flex-between flex-center">
+                <h2 class="card-title">Настройте свою подписку</h2>
+                <div class="text-right">
+                    <div class="text-muted" style="font-size: 0.9rem;">Баланс</div>
+                    <div class="text-primary" style="font-weight: 700;">{{ user.balance }} ₽</div>
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Срок действия</label>
+                <div class="flex" style="gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline flex-1 {% if not duration or duration == '7' %}active{% endif %}"
+                            onclick="selectDuration('7')">
+                        <div style="font-size: 1.25rem; font-weight: 600;">7</div>
+                        <small class="text-muted">дней</small>
+                    </button>
+                    <button type="button" class="btn btn-outline flex-1"
+                            onclick="selectDuration('14')">
+                        <div style="font-size: 1.25rem; font-weight: 600;">14</div>
+                        <small class="text-muted">дней</small>
+                    </button>
+                    <button type="button" class="btn btn-outline flex-1"
+                            onclick="selectDuration('30')">
+                        <div style="font-size: 1.25rem; font-weight: 600;">30</div>
+                        <small class="text-muted">дней</small>
+                    </button>
+                </div>
+                <input type="hidden" name="duration" id="duration" value="7">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Тип питания</label>
+                <div class="grid grid-3">
+                    <button type="button" class="btn btn-outline" onclick="selectMealType('breakfast')">
+                        <div style="font-size: 1.5rem;">🌅</div>
+                        <div>Завтрак</div>
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="selectMealType('lunch')">
+                        <div style="font-size: 1.5rem;">🍽️</div>
+                        <div>Обед</div>
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="selectMealType('both')">
+                        <div style="font-size: 1.5rem;">🌅🍽️</div>
+                        <div>Оба</div>
+                    </button>
+                </div>
+                <input type="hidden" name="meal_type" id="meal_type" value="breakfast">
+            </div>
+
+            <div class="card" style="background: #FFF9C4; border: 2px solid #FFD700;">
+                <div class="text-center" style="padding: 1.5rem;">
+                    <div class="text-muted" style="margin-bottom: 0.5rem;">Стоимость подписки</div>
+                    <div id="price" style="font-size: 2.5rem; font-weight: 700; color: #212121;">700 ₽</div>
+                    <div class="text-muted" style="font-size: 0.9rem;">
+                        <span id="duration_text">7 дней</span> •
+                        <span id="meal_type_text">только завтрак</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span style="margin-right: 0.5rem;">💳</span>
+                    Оплатить подписку
+                </button>
+            </div>
+        </form>
     </div>
-    
-    <form method="post">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label class="form-label">Длительность</label>
-            <select name="duration" class="form-input" id="duration">
-                <option value="7">1 неделя (7 дней)</option>
-                <option value="14">2 недели (14 дней)</option>
-                <option value="30">1 месяц (30 дней)</option>
-            </select>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Подробности тарифа</h2>
         </div>
-        
-        <div class="form-group">
-            <label class="form-label">Тип питания</label>
-            <select name="meal_type" class="form-input" id="meal_type">
-                <option value="breakfast">Только завтрак</option>
-                <option value="lunch">Только обед</option>
-                <option value="both">Завтрак и обед</option>
-            </select>
+
+        <div style="padding: 1rem 0;">
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Период</span>
+                <span id="detail_duration" style="font-weight: 600;">7 дней</span>
+            </div>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Питание</span>
+                <span id="detail_meal" style="font-weight: 600;">Завтрак</span>
+            </div>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Стоимость дня</span>
+                <span id="detail_day_price" style="font-weight: 600;">100 ₽</span>
+            </div>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Экономия</span>
+                <span id="detail_saving" style="color: #10b981; font-weight: 600;">15%</span>
+            </div>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem;">
+                <span class="text-muted">Дата окончания</span>
+                <span id="detail_end_date" style="font-weight: 600;">
+                    {% now "d.m.Y" as today %}
+                    {{ today|add_days:7 }}
+                </span>
+            </div>
         </div>
-        
-        <div class="card mb-3" style="background: var(--primary-bg);">
-            <h3 class="mb-2">Стоимость: <span id="price">700</span> ₽</h3>
-            <p class="text-muted">Цена зависит от выбранных параметров</p>
+
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--gray-border);">
+            <h3 style="margin-bottom: 0.75rem; font-size: 1rem;">🎯 Преимущества</h3>
+            <ul class="text-muted" style="padding-left: 1.5rem;">
+                <li>Фиксированная цена на весь период</li>
+                <li>Автоматическое списание не требуется</li>
+                <li>Возможность пропустить дни</li>
+                <li>Поддержка по любым вопросам</li>
+            </ul>
         </div>
-        
-        <button type="submit" class="btn btn-primary btn-block">Оформить абонемент</button>
-    </form>
+    </div>
 </div>
 
 <div class="card mt-3">
     <div class="card-header">
-        <h2 class="card-title">📋 Тарифы</h2>
+        <h2 class="card-title">Сравнение вариантов</h2>
     </div>
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Период</th>
-                <th>Завтрак</th>
-                <th>Обед</th>
-                <th>Завтрак + Обед</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1 неделя</td>
-                <td>700 ₽</td>
-                <td>1000 ₽</td>
-                <td>1500 ₽</td>
-            </tr>
-            <tr>
-                <td>2 недели</td>
-                <td>1300 ₽</td>
-                <td>1900 ₽</td>
-                <td>2800 ₽</td>
-            </tr>
-            <tr>
-                <td>1 месяц</td>
-                <td>2500 ₽</td>
-                <td>3800 ₽</td>
-                <td>5500 ₽</td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="grid grid-3 text-center">
+        <div style="padding: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Разово</div>
+            <div style="color: #ef4444; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">120 ₽/день</div>
+            <small class="text-muted">По меню каждый день</small>
+        </div>
+        <div style="padding: 1rem; border-left: 1px solid var(--gray-border); border-right: 1px solid var(--gray-border);">
+            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Подписка</div>
+            <div style="color: #10b981; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">100 ₽/день</div>
+            <small class="text-muted">Экономия до 20%</small>
+        </div>
+        <div style="padding: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Годовой</div>
+            <div style="color: #3b82f6; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">85 ₽/день</div>
+            <small class="text-muted">Самый выгодный вариант</small>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -97,13 +172,120 @@ const prices = {
     '30': {'breakfast': 2500, 'lunch': 3800, 'both': 5500}
 };
 
+const mealTypeNames = {
+    'breakfast': 'только завтрак',
+    'lunch': 'только обед',
+    'both': 'завтрак и обед'
+};
+
+const mealDisplayNames = {
+    'breakfast': 'Завтрак',
+    'lunch': 'Обед',
+    'both': 'Завтрак + Обед'
+};
+
+const durationNames = {
+    '7': '7 дней',
+    '14': '14 дней',
+    '30': '30 дней'
+};
+
+function selectDuration(duration) {
+    document.getElementById('duration').value = duration;
+
+    // Обновляем стиль кнопок
+    document.querySelectorAll('[onclick^="selectDuration"]').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(`'${duration}'`)) {
+            btn.classList.add('active');
+        }
+    });
+
+    updatePrice();
+}
+
+function selectMealType(mealType) {
+    document.getElementById('meal_type').value = mealType;
+
+    // Обновляем стиль кнопок
+    document.querySelectorAll('[onclick^="selectMealType"]').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(`'${mealType}'`)) {
+            btn.classList.add('active');
+        }
+    });
+
+    updatePrice();
+}
+
 function updatePrice() {
     const duration = document.getElementById('duration').value;
     const mealType = document.getElementById('meal_type').value;
-    document.getElementById('price').textContent = prices[duration][mealType];
+    const price = prices[duration][mealType];
+
+    // Обновляем цену
+    document.getElementById('price').textContent = price + ' ₽';
+    document.getElementById('duration_text').textContent = durationNames[duration];
+    document.getElementById('meal_type_text').textContent = mealTypeNames[mealType];
+
+    // Обновляем детали
+    document.getElementById('detail_duration').textContent = durationNames[duration];
+    document.getElementById('detail_meal').textContent = mealDisplayNames[mealType];
+
+    // Стоимость за день
+    const dayPrice = Math.round(price / parseInt(duration));
+    document.getElementById('detail_day_price').textContent = dayPrice + ' ₽';
+
+    // Экономия (примерная)
+    const saving = duration === '7' ? '15%' : duration === '14' ? '18%' : '20%';
+    document.getElementById('detail_saving').textContent = saving;
+
+    // Дата окончания
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + parseInt(duration));
+    document.getElementById('detail_end_date').textContent =
+        endDate.toLocaleDateString('ru-RU');
 }
 
-document.getElementById('duration').addEventListener('change', updatePrice);
-document.getElementById('meal_type').addEventListener('change', updatePrice);
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    selectDuration('7');
+    selectMealType('breakfast');
+});
+
+// Функция для добавления дней к дате (для Django template)
+function addDays(dateStr, days) {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + parseInt(days));
+    return date.toLocaleDateString('ru-RU');
+}
 </script>
+
+<style>
+.btn-outline.active {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--text-dark);
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.grid-3 .btn-outline {
+    padding: 1rem 0.5rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.grid-3 .btn-outline:hover {
+    transform: translateY(-2px);
+}
+</style>
 {% endblock %}

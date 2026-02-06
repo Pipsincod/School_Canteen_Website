@@ -1,72 +1,162 @@
 {% extends 'base.html' %}
 
-{% block title %}Оплата | Умная столовая{% endblock %}
+{% block title %}Баланс | Умная столовая{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">Пополнение баланса</h1>
-    <p class="page-subtitle">Текущий баланс: <strong>{{ user.balance }} ₽</strong></p>
+    <div class="flex flex-between flex-center">
+        <div>
+            <h1 class="page-title">Ваш счет</h1>
+            <p class="page-subtitle">Управление финансами</p>
+        </div>
+        <div class="text-right">
+            <div class="text-muted" style="margin-bottom: 0.25rem;">Доступно</div>
+            <div class="text-primary" style="font-size: 2rem; font-weight: 700;">{{ user.balance }} ₽</div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h2 class="card-title">Быстрые варианты пополнения</h2>
+        <p class="text-muted" style="margin: 0;">Выберите подходящую сумму</p>
+    </div>
+
+    <div class="grid grid-4 mb-3">
+        <button type="button" class="btn btn-outline" onclick="setAmount(100)">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">100 ₽</div>
+        </button>
+        <button type="button" class="btn btn-outline" onclick="setAmount(300)">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">300 ₽</div>
+        </button>
+        <button type="button" class="btn btn-outline" onclick="setAmount(500)">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">500 ₽</div>
+        </button>
+        <button type="button" class="btn btn-outline" onclick="setAmount(1000)">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">1000 ₽</div>
+        </button>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">Или укажите свою сумму</label>
+            <div class="flex" style="gap: 0.5rem; align-items: center;">
+                <input type="number" name="amount" id="amountInput" min="1"
+                       class="form-input" placeholder="Введите сумму в рублях" required
+                       style="flex: 1;">
+                <span style="font-weight: 600; color: var(--text-muted);">₽</span>
+            </div>
+            <small class="text-muted" style="display: block; margin-top: 0.25rem;">
+                Минимальная сумма пополнения: 1 ₽
+            </small>
+        </div>
+
+        <div class="flex" style="gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                <span style="margin-right: 0.5rem;">→</span>
+                Подтвердить пополнение
+            </button>
+        </div>
+    </form>
 </div>
 
 <div class="grid grid-2">
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title">💳 Пополнить баланс</h2>
+            <h2 class="card-title">Информация о платежах</h2>
         </div>
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label class="form-label">Сумма пополнения</label>
-                <input type="number" name="amount" min="1" class="form-input" placeholder="Введите сумму" required>
+
+        <div style="padding: 0.5rem 0;">
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Статус счета</span>
+                <span class="badge badge-success">Активен</span>
             </div>
-            
-            <div class="grid grid-3 mb-3">
-                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 100">100 ₽</button>
-                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 500">500 ₽</button>
-                <button type="button" class="btn btn-secondary" onclick="document.querySelector('input[name=amount]').value = 1000">1000 ₽</button>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-border);">
+                <span class="text-muted">Последнее пополнение</span>
+                <span>
+                    {% if payments.0 %}
+                        {{ payments.0.date|date:"d.m.Y" }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </span>
             </div>
-            
-            <button type="submit" class="btn btn-primary btn-block">Пополнить</button>
-        </form>
+            <div class="flex flex-between flex-center" style="padding: 0.75rem;">
+                <span class="text-muted">Всего операций</span>
+                <span>{{ payments|length }}</span>
+            </div>
+        </div>
     </div>
-    
-    <div class="card">
+<div class="card">
         <div class="card-header">
-            <h2 class="card-title">📜 История платежей</h2>
+            <h2 class="card-title">Записи о транзакциях</h2>
         </div>
-        
+
         {% if payments %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Сумма</th>
-                    <th>Статус</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payment in payments %}
-                <tr>
-                    <td>{{ payment.date|date:"d.m.Y" }}</td>
-                    <td><strong>{{ payment.amount }} ₽</strong></td>
-                    <td>
-                        {% if payment.succesful %}
-                            <span class="badge badge-success">Успешно</span>
-                        {% else %}
-                            <span class="badge badge-danger">Ошибка</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div style="max-height: 250px; overflow-y: auto;">
+            {% for payment in payments|slice:":5" %}
+            <div class="flex flex-between flex-center"
+                 style="padding: 0.75rem; {% if not forloop.last %}border-bottom: 1px solid var(--gray-border);{% endif %}">
+                <div>
+                    <div style="font-weight: 600;">{{ payment.date|date:"d.m.Y" }}</div>
+                    <div class="text-muted" style="font-size: 0.85rem;">Пополнение счета</div>
+                </div>
+                <div class="text-right">
+                    <div style="font-weight: 700; color: #10b981;">+{{ payment.amount }} ₽</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
         {% else %}
-        <div class="empty-state">
-            <p>История платежей пуста</p>
+        <div class="empty-state" style="padding: 2rem 1rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">💳</div>
+            <p style="margin: 0;">Нет записей о платежах</p>
         </div>
         {% endif %}
     </div>
 </div>
+
+
+</div>
+
+<script>
+    function setAmount(amount) {
+        const input = document.getElementById('amountInput');
+        input.value = amount;
+        input.focus();
+    }
+
+    // Автофокус на поле ввода при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('amountInput');
+        if (amountInput) {
+            amountInput.focus();
+        }
+    });
+</script>
+
+<style>
+    .btn-outline {
+        padding: 1rem 0.5rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        .grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
 {% endblock %}
